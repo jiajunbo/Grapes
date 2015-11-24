@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="create_run_jar" name="Create Runnable Jar for Project UIAuto">
+
+	<property name="output" location="output" />
+	<property name="bin" location="bin" />
+	<property name="libs" location="libs" />
+	<property name="src" location="src" />
+	<property name="res" location="res" />
+
+	<property name="dest" value="classes" />
+	<property name="test" value="test" />
+	<property name="lib.dir" value="${basedir}/libs" />
+	<property name="output.dir" value="${basedir}/report" />
+	<property name="html.dir" value="${output.dir}/html" />
+	<property name="xml.dir" value="${output.dir}/xml" />
+
+	<!--创建编译任务，名字是compile,depends指定了comiple任务依赖init任务 -->
+	<target name="compile" description="comile target">
+		<!--javac，编译，对应java中的javac命令。 其中srcdir定义源文件路径 destdir定义编译后文件路径， includeantruntime作用是指定编译任务是否包含ant的classpath -->
+		<javac srcdir="${src}" destdir="${bin}" includeantruntime="true">
+			<!-- classpath 定义编译需要的claspath -->
+			<classpath>
+				<fileset dir="${libs}">
+					<include name="*.jar" />
+				</fileset>
+			</classpath>
+		</javac>
+	</target>
+
+	<!--this file was created by Eclipse Runnable JAR Export Wizard -->
+	<!--ANT 1.7 is required -->
+	<target name="create_run_jar" depends="compile">
+		<jar destfile="${output}/UIAuto.jar" filesetmanifest="mergewithoutmain">
+			<manifest>
+				<attribute name="Main-Class" value="com.nq.auto.AutoMain" />
+				<attribute name="Class-Path" value="." />
+			</manifest>
+			<fileset dir="${bin}" />
+			<fileset dir="${res}" />
+			<zipfileset excludes="META-INF/*.SF" src="${libs}/ddmlib.jar" />
+			<zipfileset excludes="META-INF/*.SF" src="${libs}/dom4j-1.6.1.jar" />
+			<zipfileset excludes="META-INF/*.SF" src="${libs}/AXMLPrinter2.jar" />
+			<zipfileset excludes="META-INF/*.SF" src="${libs}/xmlpull_1_0_5.jar" />
+		</jar>
+	</target>
+
+
+	<!-- set the depends jar files of compiling -->
+	<path id="classpath">
+		<fileset dir="${lib.dir}">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+
+	<!-- task init -->
+
+	<target name="clean" description="Deletes compiled and generated code">
+		<delete dir="${dest}" />
+		<delete dir="${output.dir}" />
+	</target>
+
+	<!-- target: test report folder init -->
+
+	<target name="init" depends="clean">
+		<mkdir dir="${dest}" />
+		<mkdir dir="${output.dir}" />
+		<mkdir dir="${html.dir}" />
+		<mkdir dir="${xml.dir}" />
+	</target>
+
+	<!--target: compile -->
+	<target name="compile-case" depends="init">
+
+		<javac srcdir="${src}" destdir="${dest}" classpathref="classpath"
+			encoding="UTF-8" debug="on" deprecation="on" optimize="on"
+			failonerror="true" source="1.6" target="1.6" includeAntRuntime="false">
+			<classpath>
+				<path refid="classpath" />
+				<pathelement location="${src}" />
+			</classpath>
+		</javac>
+
+		<javac srcdir="${test}" destdir="${dest}" classpathref="classpath"
+			encoding="UTF-8" debug="on" deprecation="on" optimize="on"
+			failonerror="true" source="1.6" target="1.6" includeAntRuntime="false">
+			<classpath>
+				<path refid="classpath" />
+				<pathelement location="${test}" />
+			</classpath>
+		</javac>
+
+		<echo>compilation complete!</echo>
+	</target>
+
+	<!--初始化数据 -->
+
+	<target name="initData" depends="compile-case">
+	</target>
+
+	<!-- target: auto test all test case and output report file -->
+
+	<target name="test" depends="initData">
+		<junit printsummary="yes" fork="true" showoutput="true"
+			haltonfailure="no">
+			<!--指定生成junit生成的报告的格式 -->
+
+			<formatter type="plain" />
+			<formatter type="xml" />
+
+			<classpath>
+				<path refid="classpath" />
+				<pathelement location="${dest}" />
+			</classpath>
+
+			<batchtest todir="${xml.dir}">
+				<fileset dir="${src}">
+					<include name="**/Test*.*" />
+					<exclude name="**/AllTest.*" />
+				</fileset>
+				<fileset dir="${test}">
+					<include name="**/Test*.*" />
+					<exclude name="**/AllTest.*" />
+				</fileset>
+			</batchtest>
+		</junit>
+
+		<junitreport todir="${xml.dir}">
+			<fileset dir="${xml.dir}">
+				<include name="TEST-*.xml" />
+			</fileset>
+			<report format="noframes" todir="${html.dir}" />
+		</junitreport>
+
+		<delete>
+			<fileset dir="${xml.dir}">
+				<include name="TESTS-*.xml" />
+			</fileset>
+		</delete>
+
+		<delete dir="${dest}" />
+	</target>
+
+</project>
