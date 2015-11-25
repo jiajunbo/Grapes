@@ -19,6 +19,7 @@ import com.android.ddmlib.Log.ILogOutput;
 import com.android.ddmlib.Log.LogLevel;
 
 /**
+ * ADB命令的管理类负责获取设备的IDevice数组
  * 
  * @author jiakui
  * 
