@@ -30,9 +30,10 @@ import com.sun.image.codec.jpeg.JPEGImageDecoder;
 import com.sun.image.codec.jpeg.JPEGImageEncoder;
 
 /**
+ * 图片处理工具类
  * 
  * @author jiakui
- *
+ * 
  */
 public class ImageUtil {
 
