@@ -27,7 +27,7 @@ import com.android.ddmlib.TimeoutException;
 import com.android.ddmlib.CollectingOutputReceiver;
 
 /**
- * 自动化遍历的主类
+ * 自动化遍历的主类和启动类
  * 
  * @author jiakui
  * 
