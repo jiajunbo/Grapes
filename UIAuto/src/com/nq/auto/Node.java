@@ -3,7 +3,7 @@ package com.nq.auto;
 import java.util.ArrayList;
 
 /**
- * 界面节点定义用于处理每个节点的路径存储
+ * 界面节点定义
  * 
  * @author jiakui
  * 
